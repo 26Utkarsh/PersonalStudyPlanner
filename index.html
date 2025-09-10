@@ -1,0 +1,838 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Study Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #3498db;
+            background-color: #f8f9fa;
+        }
+
+        .tab-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px 5px 5px 0;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .subject-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .subject-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .subject-details {
+            margin-bottom: 15px;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+
+        .priority-high {
+            background: #e74c3c;
+        }
+
+        .priority-medium {
+            background: #f39c12;
+        }
+
+        .priority-low {
+            background: #95a5a6;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #27ae60;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .subject-notes {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-style: italic;
+            color: #5d6d7e;
+        }
+
+        .schedule-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .schedule-time {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 80px;
+        }
+
+        .schedule-subject {
+            font-size: 16px;
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .schedule-details {
+            text-align: right;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .day-group {
+            margin-bottom: 25px;
+        }
+
+        .day-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .reminder-item {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reminder-item.urgent {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .reminder-subject {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .reminder-time {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .reminder-countdown {
+            text-align: right;
+        }
+
+        .urgent-text {
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #5d6d7e;
+        }
+
+        .progress-chart {
+            margin-bottom: 20px;
+        }
+
+        .progress-chart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .chart-subject-name {
+            font-weight: bold;
+        }
+
+        .chart-percentage {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .chart-sessions {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .subject-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .subject-header .btn {
+                margin-top: 10px;
+            }
+            
+            .schedule-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .schedule-time {
+                margin-bottom: 5px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Personal Study Planner</h1>
+            <p>Organize your learning and track your progress</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('subjects')">Subjects</button>
+            <button class="tab-btn" onclick="showTab('schedule')">Schedule</button>
+            <button class="tab-btn" onclick="showTab('reminders')">Reminders</button>
+            <button class="tab-btn" onclick="showTab('progress')">Progress</button>
+        </div>
+
+        <!-- Subjects Tab -->
+        <div id="subjects" class="tab-content active">
+            <h2>Add New Subject</h2>
+            
+            <div class="form-group">
+                <label for="subjectName">Subject Name</label>
+                <input type="text" id="subjectName" placeholder="e.g., Mathematics, JavaScript, Spanish">
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level</label>
+                <select id="difficulty">
+                    <option value="easy">Easy (30 min sessions)</option>
+                    <option value="medium" selected>Medium (45 min sessions)</option>
+                    <option value="hard">Hard (60 min sessions)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weeklyHours">Weekly Study Hours</label>
+                <input type="number" id="weeklyHours" min="1" max="40" value="3">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes (Optional)</label>
+                <textarea id="notes" rows="3" placeholder="Study goals, important topics, etc."></textarea>
+            </div>
+
+            <button class="btn" onclick="addSubject()">Add Subject</button>
+
+            <div id="subjectsList">
+                <!-- Subjects will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div id="schedule" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Study Schedule</h2>
+                <button class="btn" onclick="generateSchedule()">Generate New Schedule</button>
+            </div>
+            
+            <div id="scheduleList">
+                <!-- Schedule will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Reminders Tab -->
+        <div id="reminders" class="tab-content">
+            <h2>Study Reminders</h2>
+            <div id="remindersList">
+                <!-- Reminders will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Progress Tab -->
+        <div id="progress" class="tab-content">
+            <h2>Your Progress</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSubjects">0</div>
+                    <div class="stat-label">Total Subjects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="weeklyHours">0</div>
+                    <div class="stat-label">Weekly Hours</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedSessions">0</div>
+                    <div class="stat-label">Sessions Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="studyStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+            
+            <div id="progressCharts">
+                <!-- Progress charts will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let subjects = [];
+        let schedule = [];
+        let completedSessions = 0;
+        let studyStreak = 0;
+
+        // Load data on page load
+        window.onload = function() {
+            updateSubjectsDisplay();
+            updateScheduleDisplay();
+            updateRemindersDisplay();
+            updateProgressDisplay();
+            checkReminders();
+        };
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Add new subject
+        function addSubject() {
+            const name = document.getElementById('subjectName').value.trim();
+            const difficulty = document.getElementById('difficulty').value;
+            const priority = document.getElementById('priority').value;
+            const weeklyHours = parseInt(document.getElementById('weeklyHours').value);
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name) {
+                alert('Please enter a subject name');
+                return;
+            }
+
+            const subject = {
+                id: Date.now(),
+                name: name,
+                difficulty: difficulty,
+                priority: priority,
+                weeklyHours: weeklyHours,
+                notes: notes,
+                progress: 0,
+                sessionsCompleted: 0,
+                totalSessions: Math.ceil(weeklyHours * 4),
+                createdAt: new Date()
+            };
+
+            subjects.push(subject);
+            
+            // Clear form
+            document.getElementById('subjectName').value = '';
+            document.getElementById('difficulty').value = 'medium';
+            document.getElementById('priority').value = 'medium';
+            document.getElementById('weeklyHours').value = '3';
+            document.getElementById('notes').value = '';
+
+            updateSubjectsDisplay();
+            generateSchedule();
+            updateProgressDisplay();
+        }
+
+        // Update subjects display
+        function updateSubjectsDisplay() {
+            const container = document.getElementById('subjectsList');
+            
+            if (subjects.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No subjects added yet</h3>
+                        <p>Add your first subject to get started with your study plan!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = subjects.map(subject => `
+                <div class="subject-item">
+                    <div class="subject-header">
+                        <div class="subject-name">${subject.name}</div>
+                        <div>
+                            <button class="btn btn-success" onclick="completeSession(${subject.id})">Complete Session</button>
+                            <button class="btn btn-danger" onclick="removeSubject(${subject.id})">Remove</button>
+                        </div>
+                    </div>
+                    <div class="subject-details">
+                        <span class="subject-tag">${subject.difficulty.toUpperCase()}</span>
+                        <span class="subject-tag priority-${subject.priority}">${subject.priority.toUpperCase()} PRIORITY</span>
+                        <span class="subject-tag">${subject.weeklyHours}h/week</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${subject.progress}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>${subject.sessionsCompleted}/${subject.totalSessions} sessions completed</span>
+                        <span>${Math.round(subject.progress)}% complete</span>
+                    </div>
+                    ${subject.notes ? `<div class="subject-notes">${subject.notes}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Complete a study session
+        function completeSession(subjectId) {
+            const subject = subjects.find(s => s.id === subjectId);
+            if (subject) {
+                subject.sessionsCompleted++;
+                subject.progress = Math.min(100, (subject.sessionsCompleted / subject.totalSessions) * 100);
+                completedSessions++;
+                studyStreak++;
+                
+                updateSubjectsDisplay();
+                updateProgressDisplay();
+                
+                alert('Great job completing a ' + subject.name + ' session! Keep it up!');
+            }
+        }
+
+        // Remove subject
+        function removeSubject(subjectId) {
+            if (confirm('Are you sure you want to remove this subject?')) {
+                subjects = subjects.filter(s => s.id !== subjectId);
+                updateSubjectsDisplay();
+                generateSchedule();
+                updateProgressDisplay();
+            }
+        }
+
+        // Generate study schedule
+        function generateSchedule() {
+            if (subjects.length === 0) {
+                updateScheduleDisplay();
+                return;
+            }
+
+            schedule = [];
+            const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const timeSlots = ['09:00', '11:00', '14:00', '16:00', '19:00', '21:00'];
+
+            // Sort subjects by priority and weekly hours
+            const sortedSubjects = [...subjects].sort((a, b) => {
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                return priorityOrder[b.priority] - priorityOrder[a.priority] || b.weeklyHours - a.weeklyHours;
+            });
+
+            let scheduleIndex = 0;
+
+            sortedSubjects.forEach(subject => {
+                const sessionsPerWeek = Math.ceil(subject.weeklyHours / (subject.difficulty === 'easy' ? 0.5 : subject.difficulty === 'medium' ? 0.75 : 1));
+                
+                for (let i = 0; i < sessionsPerWeek && scheduleIndex < daysOfWeek.length * 2; i++) {
+                    const dayIndex = scheduleIndex % daysOfWeek.length;
+                    const timeIndex = Math.floor(scheduleIndex / daysOfWeek.length) % timeSlots.length;
+                    
+                    schedule.push({
+                        day: daysOfWeek[dayIndex],
+                        time: timeSlots[timeIndex],
+                        subject: subject.name,
+                        duration: subject.difficulty === 'easy' ? 30 : subject.difficulty === 'medium' ? 45 : 60,
+                        difficulty: subject.difficulty,
+                        id: Date.now() + scheduleIndex
+                    });
+                    
+                    scheduleIndex++;
+                }
+            });
+
+            updateScheduleDisplay();
+            updateRemindersDisplay();
+        }
+
+        // Update schedule display
+        function updateScheduleDisplay() {
+            const container = document.getElementById('scheduleList');
+            
+            if (schedule.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No schedule generated yet</h3>
+                        <p>Add some subjects and click "Generate New Schedule" to create your study plan!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by day
+            const scheduleByDay = {};
+            schedule.forEach(item => {
+                if (!scheduleByDay[item.day]) {
+                    scheduleByDay[item.day] = [];
+                }
+                scheduleByDay[item.day].push(item);
+            });
+
+            container.innerHTML = Object.keys(scheduleByDay).map(day => `
+                <div class="day-group">
+                    <h3 class="day-title">${day}</h3>
+                    ${scheduleByDay[day].map(item => `
+                        <div class="schedule-item">
+                            <div class="schedule-time">${item.time}</div>
+                            <div class="schedule-subject">${item.subject}</div>
+                            <div class="schedule-details">
+                                <div>${item.duration} minutes</div>
+                                <div>${item.difficulty} level</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        // Update reminders display
+        function updateRemindersDisplay() {
+            const container = document.getElementById('remindersList');
+            const now = new Date();
+            const reminders = [];
+
+            // Generate reminders from schedule
+            schedule.forEach(item => {
+                const reminderTime = new Date();
+                const dayIndex = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(item.day);
+                const currentDay = now.getDay();
+                
+                let daysUntil = dayIndex - currentDay;
+                if (daysUntil <= 0) daysUntil += 7;
+
+                reminderTime.setDate(now.getDate() + daysUntil);
+                const [hours, minutes] = item.time.split(':');
+                reminderTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+                const hoursUntil = Math.ceil((reminderTime - now) / (1000 * 60 * 60));
+                
+                reminders.push({
+                    subject: item.subject,
+                    time: item.time,
+                    day: item.day,
+                    hoursUntil: hoursUntil,
+                    isUrgent: hoursUntil <= 2 && hoursUntil > 0
+                });
+            });
+
+            // Sort by time until reminder
+            reminders.sort((a, b) => a.hoursUntil - b.hoursUntil);
+
+            if (reminders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No upcoming reminders</h3>
+                        <p>Your reminders will appear here based on your study schedule!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reminders.slice(0, 10).map(reminder => `
+                <div class="reminder-item ${reminder.isUrgent ? 'urgent' : ''}">
+                    <div>
+                        <div class="reminder-subject">${reminder.subject}</div>
+                        <div class="reminder-time">${reminder.day} at ${reminder.time}</div>
+                    </div>
+                    <div class="reminder-countdown">
+                        <div ${reminder.isUrgent ? 'class="urgent-text"' : ''}>
+                            ${reminder.hoursUntil > 0 ? reminder.hoursUntil + 'h remaining' : 'Now!'}
+                        </div>
+                        ${reminder.isUrgent ? '<div class="urgent-text">URGENT</div>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            document.getElementById('totalSubjects').textContent = subjects.length;
+            document.getElementById('weeklyHours').textContent = subjects.reduce((sum, s) => sum + s.weeklyHours, 0);
+            document.getElementById('completedSessions').textContent = completedSessions;
+            document.getElementById('studyStreak').textContent = studyStreak;
+
+            const chartsContainer = document.getElementById('progressCharts');
+            
+            if (subjects.length === 0) {
+                chartsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No progress data yet</h3>
+                        <p>Start adding subjects and completing sessions to see your progress!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            chartsContainer.innerHTML = `
+                <h3 style="margin-bottom: 20px;">Subject Progress</h3>
+                ${subjects.map(subject => `
+                    <div class="progress-chart">
+                        <div class="progress-chart-header">
+                            <span class="chart-subject-name">${subject.name}</span>
+                            <span class="chart-percentage">${Math.round(subject.progress)}%</span>
+                        </div>
+                        <div class="progress-bar" style="height: 15px;">
+                            <div class="progress-fill" style="width: ${subject.progress}%"></div>
+                        </div>
+                        <div class="chart-sessions">
+                            ${subject.sessionsCompleted} of ${subject.totalSessions} sessions completed
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Check for urgent reminders
+        function checkReminders() {
+            const now = new Date();
+            let urgentReminders = 0;
+            
+            schedule.forEach(item => {
+                const reminderTime = new Date();
+                const dayIndex = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(item.day);
+                const currentDay = now.getDay();
+                
+                let daysUntil = dayIndex - currentDay;
+                if (daysUntil <= 0) daysUntil += 7;
+
+                reminderTime.setDate(now.getDate() + daysUntil);
+                const [hours, minutes] = item.time.split(':');
+                reminderTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+                const hoursUntil = Math.ceil((reminderTime - now) / (1000 * 60 * 60));
+                
+                if (hoursUntil <= 1 && hoursUntil > 0) {
+                    urgentReminders++;
+                }
+            });
+
+            if (urgentReminders > 0) {
+                document.title = '(' + urgentReminders + ') Study Reminder - Personal Study Planner';
+            }
+        }
+
+        // Check reminders every minute
+        setInterval(checkReminders, 60000);
+        checkReminders();
+    </script>
+</body>
+</html>
